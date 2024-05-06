@@ -1,47 +1,52 @@
-// App.js
+import React, { useState } from 'react';
+import './App.css';
 
-import React, { Component } from 'react'
-import Result from './components/Result'
-import './App.css'
-class App extends Component {
+function App() {
+  const [number, setNumber] = useState(Math.floor(Math.random() * 100) + 1);
+  const [guess, setGuess] = useState('');
+  const [message, setMessage] = useState('');
 
-	static defaultProps = {
-		secret: Math.floor(Math.random() * 20) + 1
-	}
+  const handleInputChange = (event) => {
+    setGuess(event.target.value);
+  };
 
-	constructor(props) {
-		super(props)
-		this.state = { term: '' }
+  const handleGuess = () => {
+    const guessedNumber = parseInt(guess);
+    if (isNaN(guessedNumber)) {
+      setMessage('Please enter a valid number.');
+    } else {
+      if (guessedNumber === number) {
+        setMessage('Congratulations! You guessed the correct number.');
+      } else if (guessedNumber < number) {
+        setMessage('Too low. Try again.');
+      } else {
+        setMessage('Too high. Try again.');
+      }
+    }
+    setGuess('');
+  };
 
-		this.handleChange = this.handleChange.bind(this)
-	}
+  const handleReset = () => {
+    setNumber(Math.floor(Math.random() * 100) + 1);
+    setMessage('');
+  };
 
-	handleChange(event) {
-		this.setState({
-			[event.target.name]: event.target.value
-		})
-	}
-
-	render() {
-		return (
-			<div className='container'>
-				<div className='head'>
-					<label htmlFor='term'>
-						Guess Number between 1 to 20
-					</label>
-				</div>
-				<input
-					id='term'
-					type='text'
-					name='term'
-					value={this.state.term}
-					onChange={this.handleChange}
-				/>
-
-				<Result term={this.state.term}
-					secretNum={this.props.secret} />
-			</div>
-		)
-	}
+  return (
+    <div className="container">
+      <h1>Guess the Number</h1>
+      <p>Guess a number between 1 and 100</p>
+      <input
+        type="text"
+        value={guess}
+        onChange={handleInputChange}
+        placeholder="Enter your guess"
+      />
+      <br />
+      <button onClick={handleGuess}>Guess</button>
+      <button onClick={handleReset}>Reset</button>
+      {message && <p>{message}</p>}
+    </div>
+  );
 }
-export default App
+
+export default App;
